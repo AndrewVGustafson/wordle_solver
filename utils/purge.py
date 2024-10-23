@@ -10,13 +10,19 @@ def purge_wrong(letters: list, words: list) -> list:
 def purge_wrong_location(blocks: dict, words: list) -> list:
     purged_words = words
     for letter, position in blocks:
-        purged_words = [word for word in purged_words if letter in word and letter not in word[position]]
+        purged_words = [
+            word for word in purged_words
+            if letter in word and letter not in word[position]
+            ]
     return purged_words
 
 def purge_correct(blocks: dict, words: list) -> list:
     purged_words = words
     for letter, position in blocks:
-        purged_words = [word for word in purged_words if letter in word and letter in word[position]]
+        purged_words = [
+            word for word in purged_words
+            if letter in word and letter in word[position]
+            ]
     return purged_words
 
 def filter_words(tiles_data: dict[str, Any], words: list) -> list:
@@ -24,7 +30,7 @@ def filter_words(tiles_data: dict[str, Any], words: list) -> list:
     for data_state, values in tiles_data.items():
         if data_state == "wrong":
             purged_words = purge_wrong(values, purged_words)
-            
+
         if data_state == "wrong-location":
             purged_words = purge_wrong_location(values, purged_words)
 
@@ -40,19 +46,25 @@ def better_guess(words: list) -> str:
     for word in words:
         if len(list(set(word))) == 5:
             better_words.append(word)
-    
-    if better_words != []:
+
+    if better_words:
         return better_words[0]
     else:
         return words[0]
-    
-def better_guesses(words: list) -> str:
+
+def better_guesses(words: list) -> list:
     better_words = []
     for word in words:
         if len(list(set(word))) == 5:
             better_words.append(word)
-    
-    if better_words != []:
+
+    if better_words:
         return better_words
     else:
         return words
+
+
+def get_starting_words(starting_words: list) -> list:
+    while len(starting_words) < 6:
+        starting_words.append(None)
+    return starting_words

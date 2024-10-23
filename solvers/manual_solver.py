@@ -1,8 +1,9 @@
-from utils import get_from_file, purge
-from colorama import Fore, Back, Style
 import json
+from colorama import Fore, Style
 
-class ManualSolver():
+from utils import get_from_file, purge
+
+class ManualSolver:
     def __init__(self):
         self.words = get_from_file.get_dict_data()
         self.purged_words = self.words
@@ -21,13 +22,13 @@ class ManualSolver():
 
     def get_selection(self) -> str:
         prompt = f"""{self.g}Select an option:
-    {self.g}[W]{self.y} Wrong letters 
-    {self.g}[L]{self.y} Wrong Location Letters 
-    {self.g}[C]{self.y} Correct Letters 
-    {self.g}[G]{self.y} Get Available Words 
-    {self.g}[GG]{self.y} Get Optimized Guess Words 
-    {self.g}[E]{self.y} End Game 
-    {self.g}[N]{self.y} New Game 
+    {self.g}[W]{self.y} Wrong letters
+    {self.g}[L]{self.y} Wrong Location Letters
+    {self.g}[C]{self.y} Correct Letters
+    {self.g}[G]{self.y} Get Available Words
+    {self.g}[GG]{self.y} Get Optimized Guess Words
+    {self.g}[E]{self.y} End Game
+    {self.g}[N]{self.y} New Game
     {self.g}[S]{self.y} Save/Load Options{Fore.GREEN}
         """
         return input(prompt).lower()
@@ -45,7 +46,7 @@ class ManualSolver():
             case 'c':
                 correct_letters = self.get_correct()
                 self.purged_words = purge.purge_correct(correct_letters, self.purged_words)
-            
+
             case 'g':
                 print("Please choose from one of the following words:")
                 print(*self.purged_words, "\n")
@@ -68,9 +69,14 @@ class ManualSolver():
 
             case _:
                 print(Fore.RED + "Enter from one of the options...\n" + Fore.RESET)
-                return            
-            
+                return
+
     def save_load_dialogue(self, words) -> None:
+        """_summary_
+
+        Args:
+            words (_type_): _description_
+        """
         selection = input("[S] Save Current Game [L] Load Last Played Game [R] Return to Game\n\n").lower()
         match selection:
             case "s":
@@ -85,13 +91,13 @@ class ManualSolver():
 
 
     def save_game(self, words: list) -> None:
-        with open("wordle_save", 'w') as file:
+        with open("wordle_save", 'w', encoding="utf-8") as file:
             json.dump(words, file, indent=4)
-    
+
     def load_game(self) -> None:
         try:
             print("Getting save data...")
-            with open("wordle_save", 'r') as file:
+            with open("wordle_save", 'r', encoding="utf-8") as file:
                 self.purged_words = json.load(file)
             print(self.g + "Loaded Save Data!\n" + self.g)
 
@@ -100,12 +106,12 @@ class ManualSolver():
             self.save_load_dialogue(self.purged_words)
 
     def get_wrong(self) -> list[str]:
-        wrong_letters = input(f"\nEnter each incorrect letter, not seperated by a space:  ie. 'xyz'\n")
+        wrong_letters = input("\nEnter each incorrect letter, not seperated by a space:  ie. 'xyz'\n")
         wrong_letters = list(wrong_letters)
         return wrong_letters
 
     def get_wrong_location(self) -> list[tuple[str, int]]:
-        wrong_location_letters = input(f"\nEnter each letter and the position it's not in, seperated by a space: ie. 'a1 b2 c3'\n")
+        wrong_location_letters = input("\nEnter each letter and the position it's not in, seperated by a space: ie. 'a1 b2 c3'\n")
         wrong_location_letters = wrong_location_letters.split(" ")
         try:
             wrong_location_letters = [(letter[0], int(letter[1]) - 1) for letter in wrong_location_letters]
@@ -115,7 +121,7 @@ class ManualSolver():
         return wrong_location_letters
 
     def get_correct(self) -> list[tuple[str, int]]:
-        correct_letters = input(f"\nEnter each letter and the position it's in, seperated by a space: ie. 'a1 b2 c3'\n")
+        correct_letters = input("\nEnter each letter and the position it's in, seperated by a space: ie. 'a1 b2 c3'\n")
         correct_letters = correct_letters.split(" ")
         try:
             correct_letters = [(letter[0], int(letter[1]) - 1) for letter in correct_letters]

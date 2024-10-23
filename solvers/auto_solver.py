@@ -1,4 +1,7 @@
-from selenium import webdriver 
+from time import sleep
+from typing import Any
+
+from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.ui import WebDriverWait
@@ -7,35 +10,29 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 
-from utils import get_from_file
-from time import sleep
-from typing import Any
-
 from utils import get_from_file, purge
 
-class AutoSolver():
-    def __init__(self, driver: webdriver.Chrome, URL) -> None:
-        
+class AutoSolver:
+    def __init__(self, driver: webdriver.Chrome, url: str) -> None:
+
         self.driver = driver
-        self.driver.get(URL)
-        # self.driver.execute_script("window.onbeforeunload = function() {};")
+        self.driver.get(url)
         self.actions = ActionChains(self.driver)
 
         self.words = get_from_file.get_dict_data()
         self.purged_words = self.words
+        self.starting_words = None
+        self.guess = None
+
         self.start_button_id = "startButton"
         self.play_again_button_id = "playAgainButton"
         self.guess_grid_id = "guess-grid"
+        self.start_button = self.driver.find_element(By.ID, self.start_button_id)
+        self.play_again_button = self.driver.find_element(By.ID, self.play_again_button_id)
 
 
-    def get_starting_words(self, starting_words: list):
-        while len(starting_words) < 6:
-            starting_words.append(None)
-        return starting_words
-
-    def solve(self, replay_forever: bool = False, guessing_interval: float = 1.45, starting_words: list = ["tales"]) -> None:
-
-        self.starting_words = self.get_starting_words(starting_words)
+    def solve(self, replay_forever: bool = False, guessing_interval: float = 1.45, starting_words: list = ["tales"], better_guess_cutoff: int = 3) -> None:
+        self.starting_words = purge.get_starting_words(starting_words)
         self.purged_words = self.words
 
         self.start_button = self.driver.find_element(By.ID, self.start_button_id)
@@ -44,16 +41,17 @@ class AutoSolver():
         self.click_available_element(self.start_button, self.start_button_id)
 
         for i in range(6):
-            if starting_words[i]: self.guess = starting_words[i]
+            if starting_words[i]:
+                self.guess = starting_words[i]
 
             if self.play_again_button.is_displayed():
                 break
-            
+
             print(f"Guess: {self.guess}, Words Remaining: {len(self.purged_words)}\n")
 
             self.send_word(self.guess)
             sleep(guessing_interval)
-            self.guess = self.get_guess(i)
+            self.guess = self.get_guess(i, better_guess_cutoff)
 
             if self.purged_words == 1:
                 break
@@ -63,10 +61,10 @@ class AutoSolver():
             self.solve(replay_forever=True, guessing_interval=guessing_interval, starting_words=starting_words)
 
 
-    def get_guess(self, row: int) -> str:
+    def get_guess(self, row: int, better_guess_cutoff: int) -> str:
         tile_data = self.get_tiles_data()
         self.purged_words = purge.filter_words(tile_data, self.purged_words)
-        if row <= BETTER_GUESS_CUTOFF:
+        if row <= better_guess_cutoff:
             return purge.better_guess(self.purged_words)
         else:
             return self.purged_words[0]
