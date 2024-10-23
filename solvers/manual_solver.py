@@ -9,7 +9,7 @@ class ManualSolver:
         self.purged_words = self.words
         self.g, self.y, self.l, self.r = Fore.GREEN, Fore.LIGHTYELLOW_EX, Fore.LIGHTBLACK_EX, Fore.RED
 
-    def run_solver(self):
+    def run_solver(self) -> None:
         print(f"Welcome to the {self.g}W{Fore.YELLOW}o{self.l}r{self.g}d{Fore.YELLOW}l{self.l}e{Fore.RESET} Solver!")
         try:
             while True:
@@ -21,6 +21,12 @@ class ManualSolver:
         #     print(Style.RESET_ALL, e)
 
     def get_selection(self) -> str:
+        """
+        _summary_
+
+        Returns:
+            str: _description_
+        """        
         prompt = f"""{self.g}Select an option:
     {self.g}[W]{self.y} Wrong letters
     {self.g}[L]{self.y} Wrong Location Letters
@@ -71,11 +77,12 @@ class ManualSolver:
                 print(Fore.RED + "Enter from one of the options...\n" + Fore.RESET)
                 return
 
-    def save_load_dialogue(self, words) -> None:
-        """_summary_
+    def save_load_dialogue(self, words: list) -> None:
+        """
+        Prompts user to either save current state, load previous state, or return back to previous menu.
 
         Args:
-            words (_type_): _description_
+            words (list): Words to be saved if user selects save option
         """
         selection = input("[S] Save Current Game [L] Load Last Played Game [R] Return to Game\n\n").lower()
         match selection:
@@ -91,10 +98,19 @@ class ManualSolver:
 
 
     def save_game(self, words: list) -> None:
+        """
+        Saves words into `wordle_save` file.
+
+        Args:
+            words (list): Words to be saved
+        """
         with open("wordle_save", 'w', encoding="utf-8") as file:
             json.dump(words, file, indent=4)
 
     def load_game(self) -> None:
+        """
+        Loads words from `wordle_save` into `purged_words`
+        """
         try:
             print("Getting save data...")
             with open("wordle_save", 'r', encoding="utf-8") as file:
