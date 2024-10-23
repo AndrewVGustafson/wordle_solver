@@ -1,2 +1,2 @@
 # wordle_solver
-Solves any wordle game either through manual input, or automatically.
+Solves any wordle game through manual input.
