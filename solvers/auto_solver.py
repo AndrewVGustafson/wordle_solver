@@ -101,7 +101,7 @@ class AutoSolver:
                 tiles_data[data_state].append(block)
             else:
                 tiles_data["wrong"] += letter
-        
+
         return tiles_data
 
 if __name__ == "__main__":

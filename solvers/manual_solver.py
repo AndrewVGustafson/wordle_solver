@@ -130,7 +130,7 @@ class ManualSolver:
         wrong_location_letters = input("\nEnter each letter and the position it's not in, seperated by a space: ie. 'a1 b2 c3'\n")
         wrong_location_letters = wrong_location_letters.split(" ")
         try:
-            wrong_location_letters = [(letter[0], int(letter[1]) - 1) for letter in wrong_location_letters]
+            wrong_location_letters = purge.blocks_to_list(wrong_location_letters)
         except (IndexError, ValueError):
             print(self.r + "Invalid Input." + self.g)
             self.get_wrong_location()

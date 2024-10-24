@@ -1,6 +1,17 @@
+"""Deals with parsing, sorting, and manipulating given wordle data."""
 from typing import Any
 
 def purge_wrong(letters: list, words: list) -> list:
+    """
+    Returns a purged version of inputted list, without any words containing `letters`.
+
+    Args:
+        letters (list): Characters that are not included in any part of the correct word
+        words (list): Current list of words
+
+    Returns:
+        list: List of words without `letters`
+    """
     letters = list(set(letters))
     purged_words = words
     for letter in letters:
@@ -37,8 +48,6 @@ def filter_words(tiles_data: dict[str, Any], words: list) -> list:
         if data_state == "correct":
             purged_words = purge_correct(values, purged_words)
 
-        else:
-            continue
     return purged_words
 
 def better_guess(words: list) -> str:
@@ -49,8 +58,8 @@ def better_guess(words: list) -> str:
 
     if better_words:
         return better_words[0]
-    else:
-        return words[0]
+
+    return words[0]
 
 def better_guesses(words: list) -> list:
     better_words = []
@@ -60,11 +69,17 @@ def better_guesses(words: list) -> list:
 
     if better_words:
         return better_words
-    else:
-        return words
+
+    return words
 
 
 def get_starting_words(starting_words: list) -> list:
     while len(starting_words) < 6:
         starting_words.append(None)
     return starting_words
+
+def blocks_to_list(blocks: str) -> list[tuple[str, int]]:
+    try:
+        return [(block[0], int(block[1]) - 1) for block in blocks]
+    except FileExistsError:
+        pass
