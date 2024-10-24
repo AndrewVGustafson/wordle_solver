@@ -128,7 +128,6 @@ class ManualSolver:
 
     def get_wrong_location(self) -> list[tuple[str, int]]:
         wrong_location_letters = input("\nEnter each letter and the position it's not in, seperated by a space: ie. 'a1 b2 c3'\n")
-        wrong_location_letters = wrong_location_letters.split(" ")
         try:
             wrong_location_letters = purge.blocks_to_list(wrong_location_letters)
         except (IndexError, ValueError):

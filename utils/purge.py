@@ -79,6 +79,7 @@ def get_starting_words(starting_words: list) -> list:
     return starting_words
 
 def blocks_to_list(blocks: str) -> list[tuple[str, int]]:
+    blocks = blocks.split(" ")
     try:
         return [(block[0], int(block[1]) - 1) for block in blocks]
     except FileExistsError:
