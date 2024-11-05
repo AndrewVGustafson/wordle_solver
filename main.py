@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.options import Options
 from solvers.auto_solver import AutoSolver
 from solvers.manual_solver import ManualSolver
 
-RUN_AUTO: bool = False
+RUN_AUTO = False
 
 def main() -> None:
     """Runs either manual or automatic wordle solver, depending on `RUN_AUTO`."""
